@@ -22,7 +22,7 @@ public class Breed {
         String allBreeds = "";
         JSONObject breeds = object.getJSONObject("message");
         for (Object breed:breeds.names()) {
-            allBreeds += breed.toString() + "\n";
+            allBreeds += "<a href='#'><b>" + breed.toString() + "</b></a>" + "\n";
 //            JSONArray jsonArray = (JSONArray) breeds.get(breed.toString());
 //            if (jsonArray.length() != 0) {
 //                System.out.println(jsonArray);

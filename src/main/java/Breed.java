@@ -1,3 +1,4 @@
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -18,10 +19,22 @@ public class Breed {
         JSONObject object = new JSONObject(result);
 
         String apiResult = object.getString("status");
+        String allBreeds = "";
         JSONObject breeds = object.getJSONObject("message");
+        for (Object breed:breeds.names()) {
+            allBreeds += breed.toString() + "\n";
+//            JSONArray jsonArray = (JSONArray) breeds.get(breed.toString());
+//            if (jsonArray.length() != 0) {
+//                System.out.println(jsonArray);
+//            }
+        }
+        //        for(int i = 0;i<breeds.length();i++) {
+//            JSONObject object1 = array.getJSONObject(i);
+//            System.out.println(array.getJSONObject(i));
+//            tmp += array.getJSONObject(i);
+//        }
 
-
-        return apiResult;
+        return allBreeds;
     }
 }
 

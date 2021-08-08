@@ -44,18 +44,14 @@ public class Main extends TelegramLongPollingBot {
                 case "/help":
                     sendMsg(message, "Чем вам помочь?");
                     break;
-                case "/breed_list":
+                case "Хочу получить список пород":
                     try {
                         sendMsg(message, Breed.getBreeds(message.getText(), model));
                     } catch (IOException exception) {
                         sendMsg(message, "Такой породы не найден!");
                     }
-                    break;
-                case "Хочу получить список пород":
-                    sendMsg(message, "Доступные порода");
-                    break;
-                case "/start":
-                    sendMsg(message, "Меня зовут Чат-Бот, чем я могу Вам помочь?");
+//                case "/start":
+//                    sendMsg(message, "Меня зовут Чат-Бот, чем я могу Вам помочь?");
 
                 default:
 //                    sendMsg(message,"Меня зовут Чат-Бот, чем я могу Вам помочь?");

@@ -1,3 +1,4 @@
+import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
@@ -6,7 +7,6 @@ import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.io.IOException;
@@ -38,19 +38,27 @@ public class Main extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
+        Model model = new Model();
         if (message != null && message.hasText()) {
             switch (message.getText()) {
                 case "/help":
-                    sendMsg(message,"Чем вам помочь?");
+                    sendMsg(message, "Чем вам помочь?");
                     break;
-//                case "/breed_list":
-//                    sendMsg(message,"Типы пород");
-//                    break;
+                case "/breed_list":
+                    try {
+                        sendMsg(message, Breed.getBreeds(message.getText(), model));
+                    } catch (IOException exception) {
+                        sendMsg(message, "Такой породы не найден!");
+                    }
+                    break;
                 case "Хочу получить список пород":
-                    sendMsg(message,"Доступные порода");
+                    sendMsg(message, "Доступные порода");
                     break;
+                case "/start":
+                    sendMsg(message, "Меня зовут Чат-Бот, чем я могу Вам помочь?");
+
                 default:
-                    sendMsg(message,"Меня зовут Чат-Бот, чем я могу Вам помочь?");
+//                    sendMsg(message,"Меня зовут Чат-Бот, чем я могу Вам помочь?");
 //                    try {
 //                        sendMsg(message, Weather.getWeather(message.getText(),model));
 //                    } catch (IOException exception) {
@@ -60,7 +68,7 @@ public class Main extends TelegramLongPollingBot {
         }
     }
 
-    public void sendMsg(Message message,String text) {
+    public void sendMsg(Message message, String text) {
         SendMessage sendMessage = new SendMessage();
 //        sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId());

@@ -48,26 +48,15 @@ public class Main extends TelegramLongPollingBot {
                     break;
                 case "Хочу получить список пород":
                     try {
-                        sendMsg(message, Breed.getBreeds(message.getText(), model));
-                    } catch (IOException exception) {
-                        sendMsg(message, "Такой породы не найден!");
-                    }
-                case "/start":
-                    try {
-                        execute(sendInlineKeyBoardMessage(update.getMessage().getChatId()));
-                    } catch (TelegramApiException exception) {
+                        execute(sendInlineKeyBoardMessage(update.getMessage().getChatId(), Breed.getBreeds(message.getText(), model)));
+                    } catch (TelegramApiException | IOException exception) {
                         exception.printStackTrace();
                     }
                 default:
-//                    sendMsg(message,"Меня зовут Чат-Бот, чем я могу Вам помочь?");
-//                    try {
-//                        sendMsg(message, Weather.getWeather(message.getText(),model));
-//                    } catch (IOException exception) {
-//                        sendMsg(message, "Такой город не найден!");
-//                    }
+                    sendMsg(message, "Меня зовут Чат-Бот, чем я могу Вам помочь?");
+
             }
-        }
-        else if(update.hasCallbackQuery()){
+        } else if (update.hasCallbackQuery()) {
             try {
                 execute(new SendMessage().setText(
                         update.getCallbackQuery().getData())
@@ -108,36 +97,28 @@ public class Main extends TelegramLongPollingBot {
 
         keyboardRowList.add(keyboardFirstRow);
 
-//        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-//        List < List <InlineKeyboardButton>> rowsInline = new ArrayList < > ();
-//        List < InlineKeyboardButton > rowInline = new ArrayList < > ();
-//        rowInline.add(new InlineKeyboardButton().setText("Open Browser").setUrl("https://www.google.com/"));
-//        rowsInline.add(rowInline);
-//        markupInline.setKeyboard(rowsInline);
-//        sendMessage.setReplyMarkup(markupInline);
-
-
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
     }
 
 
-    public static SendMessage sendInlineKeyBoardMessage(long chatId) {
+    public static SendMessage sendInlineKeyBoardMessage(long chatId, List<String> breeds) throws IOException {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
-        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton();
-        inlineKeyboardButton1.setText("Тык");
-        inlineKeyboardButton1.setCallbackData("Button \"Тык\" has been pressed");
-        inlineKeyboardButton2.setText("Тык2");
-        inlineKeyboardButton2.setCallbackData("Button \"Тык2\" has been pressed");
-        List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
-        List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>();
-        keyboardButtonsRow1.add(inlineKeyboardButton1);
-        keyboardButtonsRow1.add(new InlineKeyboardButton().setText("Fi4a").setCallbackData("CallFi4a"));
-        keyboardButtonsRow2.add(inlineKeyboardButton2);
+
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(keyboardButtonsRow1);
-        rowList.add(keyboardButtonsRow2);
+        for (int i = 0; i < breeds.size(); i++) {
+            InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
+            inlineKeyboardButton1.setText(breeds.get(i));
+//            inlineKeyboardButton1.setCallbackData(Breed.getRandomBreedDog(inlineKeyboardButton1.getText()));
+            inlineKeyboardButton1.setCallbackData(Breed.getRandomBreedDog(inlineKeyboardButton1.getText()));
+//            inlineKeyboardButton1.setCallbackData(inlineKeyboardButton1.getText());
+            List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
+
+            keyboardButtonsRow1.add(inlineKeyboardButton1);
+            rowList.add(keyboardButtonsRow1);
+        }
+
         inlineKeyboardMarkup.setKeyboard(rowList);
+
         return new SendMessage().setChatId(chatId).setText("Пример").setReplyMarkup(inlineKeyboardMarkup);
     }
 }

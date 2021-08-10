@@ -14,6 +14,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class Main extends TelegramLongPollingBot {
@@ -48,12 +49,16 @@ public class Main extends TelegramLongPollingBot {
                     break;
                 case "Хочу получить список пород":
                     try {
-                        execute(sendInlineKeyBoardMessage(update.getMessage().getChatId(), Breed.getBreeds(message.getText(), model)));
+                        execute(sendInlineKeyBoardMessage(update.getMessage().getChatId(), Breed.getBreeds()));
                     } catch (TelegramApiException | IOException exception) {
                         exception.printStackTrace();
                     }
                 default:
-                    sendMsg(message, "Меня зовут Чат-Бот, чем я могу Вам помочь?");
+                    try {
+                        sendMsg(message, Breed.getRandomBreedDog(message.getText().toLowerCase(Locale.ROOT)));
+                    } catch (IOException exception) {
+                        sendMsg(message, "Собаки такой породы не найдено!");
+                    }
 
             }
         } else if (update.hasCallbackQuery()) {
@@ -103,22 +108,21 @@ public class Main extends TelegramLongPollingBot {
 
     public static SendMessage sendInlineKeyBoardMessage(long chatId, List<String> breeds) throws IOException {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        List<List<InlineKeyboardButton>> rowList1 = new ArrayList<>();
         for (int i = 0; i < breeds.size(); i++) {
             InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
+
             inlineKeyboardButton1.setText(breeds.get(i));
-//            inlineKeyboardButton1.setCallbackData(Breed.getRandomBreedDog(inlineKeyboardButton1.getText()));
-            inlineKeyboardButton1.setCallbackData(Breed.getRandomBreedDog(inlineKeyboardButton1.getText()));
-//            inlineKeyboardButton1.setCallbackData(inlineKeyboardButton1.getText());
+//            inlineKeyboardButton1.setCallbackData("aa");
+
             List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
 
             keyboardButtonsRow1.add(inlineKeyboardButton1);
-            rowList.add(keyboardButtonsRow1);
+            rowList1.add(keyboardButtonsRow1);
         }
 
-        inlineKeyboardMarkup.setKeyboard(rowList);
+        inlineKeyboardMarkup.setKeyboard(rowList1);
 
-        return new SendMessage().setChatId(chatId).setText("Пример").setReplyMarkup(inlineKeyboardMarkup);
+        return new SendMessage().setChatId(chatId).setText("Все породы:").setReplyMarkup(inlineKeyboardMarkup);
     }
 }

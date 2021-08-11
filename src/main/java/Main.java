@@ -14,7 +14,6 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class Main extends TelegramLongPollingBot {
@@ -50,31 +49,32 @@ public class Main extends TelegramLongPollingBot {
                 case "Хочу получить список пород":
                     try {
                         execute(sendInlineKeyBoardMessage(update.getMessage().getChatId(), Breed.getBreeds()));
-                    } catch (TelegramApiException | IOException exception) {
+//                        sendMsg(message, Breed.getBreeds());
+                    } catch (IOException | TelegramApiException exception) {
                         exception.printStackTrace();
                     }
+                    break;
                 default:
-                    try {
-                        sendMsg(message, Breed.getRandomBreedDog(message.getText().toLowerCase(Locale.ROOT)));
-                    } catch (IOException exception) {
-                        sendMsg(message, "Собаки такой породы не найдено!");
-                    }
+                    //                        execute(sendInlineKeyBoardMessage(update.getMessage().getChatId(), Breed.getBreeds()));
+//                        sendMsg(message, Breed.getRandomBreedDog(message.getText().toLowerCase(Locale.ROOT)));
+//                    break;
 
             }
         } else if (update.hasCallbackQuery()) {
             try {
-                execute(new SendMessage().setText(
-                        update.getCallbackQuery().getData())
+
+                execute(new SendMessage()
+                        .setText(Breed.getRandomBreedDog(update.getCallbackQuery().getData()))
                         .setChatId(update.getCallbackQuery().getMessage().getChatId()));
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
+            } catch (TelegramApiException | IOException exception) {
+                exception.printStackTrace();
             }
+
         }
     }
 
     public void sendMsg(Message message, String text) {
         SendMessage sendMessage = new SendMessage();
-//        sendMessage.enableMarkdown(true);
         sendMessage.enableHtml(true);
         sendMessage.setChatId(message.getChatId());
         sendMessage.setReplyToMessageId(message.getMessageId());
@@ -109,12 +109,13 @@ public class Main extends TelegramLongPollingBot {
     public static SendMessage sendInlineKeyBoardMessage(long chatId, List<String> breeds) throws IOException {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowList1 = new ArrayList<>();
+
+
         for (int i = 0; i < breeds.size(); i++) {
             InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
 
             inlineKeyboardButton1.setText(breeds.get(i));
-//            inlineKeyboardButton1.setCallbackData("aa");
-
+            inlineKeyboardButton1.setCallbackData(inlineKeyboardButton1.getText());
             List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
 
             keyboardButtonsRow1.add(inlineKeyboardButton1);
@@ -122,7 +123,8 @@ public class Main extends TelegramLongPollingBot {
         }
 
         inlineKeyboardMarkup.setKeyboard(rowList1);
-
-        return new SendMessage().setChatId(chatId).setText("Все породы:").setReplyMarkup(inlineKeyboardMarkup);
+        return new SendMessage().setChatId(chatId).
+                setText("Все породы").
+                setReplyMarkup(inlineKeyboardMarkup);
     }
 }

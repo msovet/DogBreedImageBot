@@ -23,6 +23,7 @@ public class Breed {
 
         JSONObject object = new JSONObject(result);
 
+        String apiResult = object.getString("status");
         JSONObject breeds = object.getJSONObject("message");
         List<String> allBreeds = new ArrayList<>();
         for (Object breed : breeds.names()) {
@@ -37,11 +38,11 @@ public class Breed {
         URL url = new URL("https://dog.ceo/api/breed/" + breedDog.toLowerCase(Locale.ROOT) + "/images/random");
 
         Scanner in = new Scanner((InputStream) url.getContent());
-        String result = "";
+        StringBuilder result = new StringBuilder();
         while (in.hasNext()) {
-            result += in.nextLine();
+            result.append(in.nextLine());
         }
-        JSONObject object = new JSONObject(result);
+        JSONObject object = new JSONObject(result.toString());
 
         return object.getString("message");
     }

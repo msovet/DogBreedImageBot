@@ -54,6 +54,8 @@ public class Main extends TelegramLongPollingBot {
                         exception.printStackTrace();
                     }
                     break;
+                case "/start":
+                    sendMsg(message, "Меня зовут Чат-Бот, чем я могу Вам помочь?");
                 default:
                     //                        execute(sendInlineKeyBoardMessage(update.getMessage().getChatId(), Breed.getBreeds()));
 //                        sendMsg(message, Breed.getRandomBreedDog(message.getText().toLowerCase(Locale.ROOT)));
@@ -89,18 +91,24 @@ public class Main extends TelegramLongPollingBot {
 
     public void setButtons(SendMessage sendMessage) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        ReplyKeyboardMarkup replyKeyboardMarkup1 = new ReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         replyKeyboardMarkup.setSelective(true);
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
 
         List<KeyboardRow> keyboardRowList = new ArrayList<>();
+        List<KeyboardRow> keyboardRowList2 = new ArrayList<>();
+
         KeyboardRow keyboardFirstRow = new KeyboardRow();
+        KeyboardRow keyboardSecondRow = new KeyboardRow();
 
         keyboardFirstRow.add(new KeyboardButton("/help"));
-        keyboardFirstRow.add(new KeyboardButton("Хочу получить список пород"));
+        keyboardFirstRow.add(new KeyboardButton("/start"));
+        keyboardSecondRow.add(new KeyboardButton("Хочу получить список пород"));
 
         keyboardRowList.add(keyboardFirstRow);
+        keyboardRowList.add(keyboardSecondRow);
 
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
     }
